@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 1, // Assign a default role (e.g., 1 for "admin")
+            'business_id' => 1, // Explicitly set business_id
+            'outlet_id' => 1, // Add default outlet ID
         ]);
     }
 }
