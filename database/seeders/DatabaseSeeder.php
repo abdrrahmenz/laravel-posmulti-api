@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         Role::create([
             'id' => 1,
             'name' => 'Admin',
-            'description' => 'Administrator role with full access'
         ]);
 
         // Create a business
