@@ -19,44 +19,42 @@ class DatabaseSeeder extends Seeder
     {
         // Temporarily disable foreign key constraints
         Schema::disableForeignKeyConstraints();
-        
-        // Create a role first
-        Role::create([
+
+        // 1. Create the role
+        $role = Role::create([
             'id' => 1,
             'name' => 'Admin',
         ]);
 
-        // Create initial user without business_id and outlet_id
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'user@test.com',
-            'password' => bcrypt('password'),
-            'role_id' => 1,
-            // No business_id or outlet_id yet
-        ]);
-
-        // Create a business with the user as owner
+        // 2. Create the business first (owner_id will be null initially)
         $business = Business::create([
             'id' => 1,
             'name' => 'Default Business',
-            'owner_id' => $user->id,
+            'owner_id' => null, // Will update this later
         ]);
 
-        // Create an outlet
-        Outlet::create([
+        // 3. Create an outlet with the business
+        $outlet = Outlet::create([
             'id' => 1,
             'name' => 'Default Outlet',
             'address' => 'Default Address',
             'business_id' => $business->id
         ]);
 
-        // Update the user with business_id and outlet_id
-        if (Schema::hasColumn('users', 'business_id')) {
-            $user->update([
-                'business_id' => $business->id,
-                'outlet_id' => 1,
-            ]);
-        }
+        // 4. Create user with business_id and outlet_id
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'user@test.com',
+            'password' => bcrypt('password'),
+            'role_id' => $role->id,
+            'business_id' => $business->id,
+            'outlet_id' => $outlet->id,
+        ]);
+
+        // 5. Update the business with the owner_id
+        $business->update([
+            'owner_id' => $user->id,
+        ]);
 
         // Re-enable foreign key constraints
         Schema::enableForeignKeyConstraints();

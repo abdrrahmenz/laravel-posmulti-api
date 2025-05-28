@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             //owner_id is a foreign key that references the id column on the users table
-            $table->foreignId('owner_id')->constrained('users');
+            $table->foreignId('owner_id')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
